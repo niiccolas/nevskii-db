@@ -4,18 +4,18 @@
   "description": "There are arrays in PostgreSQL. For example:",
   "main": "csvToPgsql.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db": "./bin/refresh_db.sh"
+    "make-db": "node src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "await-exec": "^0.1.2",
+    "chalk": "^4.1.0",
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
+    "execution-time": "^1.4.1",
     "pg": "^8.3.3",
     "pg-format": "^1.0.4",
-    "pgtools": "^0.3.0"
+    "spinnies": "^0.5.1"
   }
 }
