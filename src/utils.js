@@ -52,6 +52,7 @@ const generateIdName = (tableName) => {
 };
 
 /**
+
  * Parse CSV to an array of JSON objects
  * @param {string} sourceFile
  */
@@ -78,6 +79,7 @@ const spinner = () => {
   spinnies.add("drop", { text: "Dropping current DB" });
   spinnies.add("csv", { text: "Parsing CSV source" });
   spinnies.add("tables", { text: "Populating tables" });
+
   return spinnies;
 };
 
