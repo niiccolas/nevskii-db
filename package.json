@@ -1,13 +1,13 @@
 {
   "name": "nevskii-db",
   "version": "1.0.0",
-  "description": "There are arrays in PostgreSQL. For example:",
-  "main": "csvToPgsql.js",
+  "description": "Starter PostgreSQL database for the Nevskii platform. Seed, dump, deploy!",
+  "main": "src/index.js",
   "scripts": {
-    "make-db": "node src/index.js"
+    "seed": "node src/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "niiccolas",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",

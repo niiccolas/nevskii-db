@@ -4,19 +4,19 @@ const { parseCSV, spinnies, log } = require("./utils");
 const {
   pool,
   rebootDB,
-  buildMainTables,
-  buildForeignTables,
-  buildUsers,
+  seedMainTables,
+  seedForeignTables,
+  seedUsers,
 } = require("./db");
 
 /**
- * Build local nevskii database
- * @param {Object} options - Build options
- * @param {?Array<number, number>} options.range - Range of items to be processed, by default, all.
- * @param {string} options.filepath - Path to the raw CSV source file
+ * Seed local nevskii database
+ * @param {Object} options - Seed options
+ * @param {?Array<number, number>} options.range - Range/limit of items to be processed
+ * @param {string} options.filepath - Path to CSV source file
  * @param {Array<{}>} options.users - Users to be created
  */
-const makeDB = async ({ filepath, range = [0], users }) => {
+const seed = async ({ filepath, range = [0], users }) => {
   perf.start();
   try {
     await rebootDB();
@@ -25,9 +25,9 @@ const makeDB = async ({ filepath, range = [0], users }) => {
     const csv = (await parseCSV(filepath)).slice(...range);
     spinnies.succeed("csv");
 
-    await buildForeignTables(csv);
-    await buildUsers(users);
-    await buildMainTables(csv);
+    await seedForeignTables(csv);
+    await seedUsers(users);
+    await seedMainTables(csv);
     spinnies.succeed("tables");
 
     await pool.end();
@@ -41,7 +41,7 @@ const makeDB = async ({ filepath, range = [0], users }) => {
 
 const options = {
   range: [0, 400],
-  filepath: "dvd_4412_mint.csv",
+  filepath: "../assets/csv/dvd_4412_mint.csv",
   users: [
     {
       type: 1, // admin
@@ -61,4 +61,4 @@ const options = {
   ],
 };
 
-makeDB(options);
+seed(options);

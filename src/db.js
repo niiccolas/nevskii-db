@@ -42,7 +42,7 @@ const [
  * Write data to VIDEOS, PRODUCTS and associated join tables
  * @param {Array<{}>} data
  */
-const buildMainTables = async (data) => {
+const seedMainTables = async (data) => {
   for await (const [
     index,
     {
@@ -254,7 +254,7 @@ const buildMainTables = async (data) => {
  * Write data to foreign/accessory tables
  * @param {Array<{}>} data
  */
-const buildForeignTables = async (data) => {
+const seedForeignTables = async (data) => {
   data.forEach(
     async ({
       authors: csv_authors,
@@ -344,7 +344,7 @@ const buildForeignTables = async (data) => {
  * Populate user_types & users table
  * @param {Array<{}>} an array of user objects
  */
-const buildUsers = async (users) => {
+const seedUsers = async (users) => {
   await pool.query(`INSERT INTO user_types ("description")
   VALUES ('admin'), ('user');`);
 
@@ -405,7 +405,7 @@ const insertIntoTable = (tableName, set) => {
  */
 const rebootDB = async () => {
   var schema = fs
-    .readFileSync("bin/sql/QuickDBD-nevskii.sql")
+    .readFileSync("./assets/sql/QuickDBD-nevskii.sql")
     .toString()
     .trim();
 
@@ -422,8 +422,8 @@ const rebootDB = async () => {
 
 module.exports = {
   pool,
-  buildMainTables,
-  buildForeignTables,
-  buildUsers,
+  seedMainTables,
+  seedForeignTables,
+  seedUsers,
   rebootDB,
 };
