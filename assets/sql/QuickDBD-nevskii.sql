@@ -28,7 +28,7 @@ CREATE TABLE "products" (
 );
 
 CREATE TABLE "stock_statuses" (
-    "id_stock_status" int   NOT NULL,
+    "id_stock_status" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_stock_statuses" PRIMARY KEY (
         "id_stock_status"
@@ -36,7 +36,7 @@ CREATE TABLE "stock_statuses" (
 );
 
 CREATE TABLE "media_types" (
-    "id_media_type" int   NOT NULL,
+    "id_media_type" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_media_types" PRIMARY KEY (
         "id_media_type"
@@ -44,7 +44,7 @@ CREATE TABLE "media_types" (
 );
 
 CREATE TABLE "distributors" (
-    "id_distributor" int   NOT NULL,
+    "id_distributor" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_distributors" PRIMARY KEY (
         "id_distributor"
@@ -52,7 +52,7 @@ CREATE TABLE "distributors" (
 );
 
 CREATE TABLE "availabilities" (
-    "id_availability" int   NOT NULL,
+    "id_availability" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_availabilities" PRIMARY KEY (
         "id_availability"
@@ -60,17 +60,25 @@ CREATE TABLE "availabilities" (
 );
 
 CREATE TABLE "product_authors" (
+    "id_product_authors" serial   NOT NULL,
     "id_pau_product" int   NULL,
-    "id_pau_author" int   NULL
+    "id_pau_author" int   NULL,
+    CONSTRAINT "pk_product_authors" PRIMARY KEY (
+        "id_product_authors"
+     )
 );
 
 CREATE TABLE "product_countries" (
+    "id_product_countries" serial   NOT NULL,
     "id_pco_product" int   NULL,
-    "id_pco_country" int   NULL
+    "id_pco_country" int   NULL,
+    CONSTRAINT "pk_product_countries" PRIMARY KEY (
+        "id_product_countries"
+     )
 );
 
 CREATE TABLE "authors" (
-    "id_author" int   NOT NULL,
+    "id_author" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     "image_url" varchar   NULL,
     CONSTRAINT "pk_authors" PRIMARY KEY (
@@ -79,12 +87,16 @@ CREATE TABLE "authors" (
 );
 
 CREATE TABLE "video_actors" (
+    "id_video_actors" serial   NOT NULL,
     "id_vac_video" int   NULL,
-    "id_vac_actor" int   NULL
+    "id_vac_actor" int   NULL,
+    CONSTRAINT "pk_video_actors" PRIMARY KEY (
+        "id_video_actors"
+     )
 );
 
 CREATE TABLE "actors" (
-    "id_actor" int   NOT NULL,
+    "id_actor" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     "image_url" varchar   NULL,
     CONSTRAINT "pk_actors" PRIMARY KEY (
@@ -93,7 +105,7 @@ CREATE TABLE "actors" (
 );
 
 CREATE TABLE "countries" (
-    "id_country" int   NOT NULL,
+    "id_country" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     CONSTRAINT "pk_countries" PRIMARY KEY (
         "id_country"
@@ -101,7 +113,7 @@ CREATE TABLE "countries" (
 );
 
 CREATE TABLE "publishers" (
-    "id_publisher" int   NOT NULL,
+    "id_publisher" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     "website" varchar   NULL,
     CONSTRAINT "pk_publishers" PRIMARY KEY (
@@ -123,12 +135,16 @@ CREATE TABLE "videos" (
 );
 
 CREATE TABLE "video_audio" (
+    "id_video_audio" serial   NOT NULL,
     "id_vau_video" int   NULL,
-    "id_vau_audio_track" int   NULL
+    "id_vau_audio_track" int   NULL,
+    CONSTRAINT "pk_video_audio" PRIMARY KEY (
+        "id_video_audio"
+     )
 );
 
 CREATE TABLE "audio_tracks" (
-    "id_audio_track" int   NOT NULL,
+    "id_audio_track" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_audio_tracks" PRIMARY KEY (
         "id_audio_track"
@@ -136,7 +152,7 @@ CREATE TABLE "audio_tracks" (
 );
 
 CREATE TABLE "age_ratings" (
-    "id_age_rating" int   NOT NULL,
+    "id_age_rating" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     CONSTRAINT "pk_age_ratings" PRIMARY KEY (
         "id_age_rating"
@@ -144,7 +160,7 @@ CREATE TABLE "age_ratings" (
 );
 
 CREATE TABLE "subcategories" (
-    "id_subcategory" int   NOT NULL,
+    "id_subcategory" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_subcategories" PRIMARY KEY (
         "id_subcategory"
@@ -152,7 +168,7 @@ CREATE TABLE "subcategories" (
 );
 
 CREATE TABLE "genres" (
-    "id_genre" int   NOT NULL,
+    "id_genre" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_genres" PRIMARY KEY (
         "id_genre"
@@ -160,7 +176,7 @@ CREATE TABLE "genres" (
 );
 
 CREATE TABLE "tv_formats" (
-    "id_tv_format" int   NOT NULL,
+    "id_tv_format" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_tv_formats" PRIMARY KEY (
         "id_tv_format"
@@ -168,7 +184,7 @@ CREATE TABLE "tv_formats" (
 );
 
 CREATE TABLE "film_formats" (
-    "id_film_format" int   NOT NULL,
+    "id_film_format" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_film_formats" PRIMARY KEY (
         "id_film_format"
@@ -176,17 +192,25 @@ CREATE TABLE "film_formats" (
 );
 
 CREATE TABLE "video_genres" (
+    "id_video_genres" serial   NOT NULL,
     "id_vge_video" int   NULL,
-    "id_vge_genre" int   NULL
+    "id_vge_genre" int   NULL,
+    CONSTRAINT "pk_video_genres" PRIMARY KEY (
+        "id_video_genres"
+     )
 );
 
 CREATE TABLE "video_subcategories" (
+    "id_video_subcategories" serial   NOT NULL,
     "id_vsc_video" int   NULL,
-    "id_vsc_subcategory" int   NULL
+    "id_vsc_subcategory" int   NULL,
+    CONSTRAINT "pk_video_subcategories" PRIMARY KEY (
+        "id_video_subcategories"
+     )
 );
 
 CREATE TABLE "video_categories" (
-    "id_video_category" int   NOT NULL,
+    "id_video_category" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_video_categories" PRIMARY KEY (
         "id_video_category"
@@ -194,7 +218,7 @@ CREATE TABLE "video_categories" (
 );
 
 CREATE TABLE "video_zones" (
-    "id_video_zone" int   NOT NULL,
+    "id_video_zone" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_video_zones" PRIMARY KEY (
         "id_video_zone"
@@ -202,12 +226,16 @@ CREATE TABLE "video_zones" (
 );
 
 CREATE TABLE "video_subtitles" (
+    "id_video_subtitles" serial   NOT NULL,
     "id_vst_video" int   NULL,
-    "id_vst_subtitle" int   NULL
+    "id_vst_subtitle" int   NULL,
+    CONSTRAINT "pk_video_subtitles" PRIMARY KEY (
+        "id_video_subtitles"
+     )
 );
 
 CREATE TABLE "subtitles" (
-    "id_subtitle" int   NOT NULL,
+    "id_subtitle" serial   NOT NULL,
     "name" varchar(100)   NOT NULL,
     CONSTRAINT "pk_subtitles" PRIMARY KEY (
         "id_subtitle"
@@ -225,9 +253,13 @@ CREATE TABLE "orders" (
 );
 
 CREATE TABLE "order_products" (
+    "id_order_products" serial   NOT NULL,
     "id_orp_order" int   NULL,
     "id_orp_product" int   NULL,
-    "quantity" int   NOT NULL
+    "quantity" int   NOT NULL,
+    CONSTRAINT "pk_order_products" PRIMARY KEY (
+        "id_order_products"
+     )
 );
 
 CREATE TABLE "users" (
@@ -254,12 +286,16 @@ CREATE TABLE "user_types" (
 );
 
 CREATE TABLE "video_collections" (
+    "id_video_collections" serial   NOT NULL,
     "id_vco_video" int   NULL,
-    "id_vco_collection" int   NULL
+    "id_vco_collection" int   NULL,
+    CONSTRAINT "pk_video_collections" PRIMARY KEY (
+        "id_video_collections"
+     )
 );
 
 CREATE TABLE "collections" (
-    "id_collection" int   NOT NULL,
+    "id_collection" serial   NOT NULL,
     "name" varchar(255)   NOT NULL,
     CONSTRAINT "pk_collections" PRIMARY KEY (
         "id_collection"

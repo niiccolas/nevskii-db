@@ -1,0 +1,201 @@
+products
+-
+id_product pk serial
+title varchar(255)
+title_original varchar(255)
+price null bigint # price in cents
+synopsis null text
+production_year null smallint
+created_at timestamptz
+ean null bigint
+image_url null varchar
+id_video null int fk >- videos.id_video
+id_vinyl null int fk
+id_publisher int fk >- publishers.id_publisher
+id_availability int fk >- availabilities.id_availability
+id_distributor int fk >- distributors.id_distributor
+id_age_rating null int fk >- age_ratings.id_age_rating
+id_media_type null int fk >- media_types.id_media_type
+id_stock_status int fk >- stock_statuses.id_stock_status
+
+stock_statuses
+-
+id_stock_status pk serial
+name varchar(100)
+
+media_types
+-
+id_media_type pk serial
+name varchar(100)
+
+distributors
+-
+id_distributor pk serial
+name varchar(100)
+
+availabilities
+-
+id_availability pk serial
+name varchar(100)
+
+product_authors
+-
+id_product_authors pk serial
+id_pau_product null int fk >- products.id_product
+id_pau_author null int fk >- authors.id_author
+
+product_countries
+-
+id_product_countries pk serial
+id_pco_product null int FK >- products.id_product
+id_pco_country null int FK >- countries.id_country
+
+authors
+-
+id_author pk serial
+name varchar(255)
+image_url null varchar
+
+video_actors
+-
+id_video_actors pk serial
+id_vac_video null int fk >- videos.id_video
+id_vac_actor null int fk >- actors.id_actor
+
+actors
+-
+id_actor pk serial
+name varchar(255)
+image_url null varchar
+
+countries
+-
+id_country pk serial
+name varchar(255)
+
+publishers
+-
+id_publisher pk serial
+name varchar(255)
+website null varchar
+
+videos
+-
+id_video pk serial
+bonus_content null text
+minutes null int
+id_zone null int fk >- video_zones.id_video_zone
+id_category null int fk >- video_categories.id_video_category
+id_tv_format null int FK >- tv_formats.id_tv_format
+id_film_format null int FK >- film_formats.id_film_format
+
+video_audio
+-
+id_video_audio pk serial
+id_vau_video null int fk >- videos.id_video
+id_vau_audio_track null int fk >- audio_tracks.id_audio_track
+
+audio_tracks
+-
+id_audio_track pk serial
+name varchar(100)
+
+age_ratings
+-
+id_age_rating pk serial
+name varchar(255)
+
+subcategories
+-
+id_subcategory pk serial
+name varchar(100)
+
+genres
+-
+id_genre pk serial
+name varchar(100)
+
+tv_formats
+-
+id_tv_format pk serial
+name varchar(100)
+
+film_formats
+-
+id_film_format pk serial
+name varchar(100)
+
+video_genres
+-
+id_video_genres pk serial
+id_vge_video null int FK >- videos.id_video
+id_vge_genre null int FK >- genres.id_genre
+
+video_subcategories
+-
+id_video_subcategories pk serial
+id_vsc_video null int fk >- videos.id_video
+id_vsc_subcategory null int fk >- subcategories.id_subcategory
+
+video_categories
+-
+id_video_category pk serial
+name varchar(100)
+
+video_zones
+- 
+id_video_zone pk serial
+name varchar(100)
+
+video_subtitles
+-
+id_video_subtitles pk serial
+id_vst_video null int fk >- videos.id_video
+id_vst_subtitle null int fk >- subtitles.id_subtitle
+
+subtitles
+-
+id_subtitle pk serial
+name varchar(100)
+
+orders
+-
+id_order pk serial  
+id_user int fk >- users.id_user
+status varchar(100)
+created_at timestamptz
+
+order_products
+-
+id_order_products pk serial
+id_orp_order null  int fk >- orders.id_order
+id_orp_product null int fk >- products.id_product
+quantity int
+
+users
+-
+id_user serial pk
+id_user_type int fk >- user_types.id_user_type
+id_country int fk >- countries.id_country
+full_name varchar(255)
+email varchar(255)
+gender null char(2)
+address null varchar(255)
+date_of_birth date
+created_at timestamptz
+
+user_types
+-
+id_user_type pk serial
+description varchar(50)
+
+video_collections
+-
+id_video_collections pk serial
+id_vco_video null int FK >- videos.id_video
+id_vco_collection null int FK >- collections.id_collection
+
+collections
+-
+id_collection pk serial
+name varchar(255)
