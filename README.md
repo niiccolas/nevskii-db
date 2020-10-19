@@ -3,12 +3,13 @@
 <p align="center">
   <img width="600" src="./assets/svg/seed.svg">
 </p>
+Starter PostgreSQL database of 8182 movie items for the Nevskii platform.
 
-Starter PostgreSQL database for the Nevskii platform. Seed local with **Docker**, dump & deploy to **Heroku**!
+Seed & dump locally with **Docker**, then deploy to **Heroku**!
 
 ## Setup
 
-Clone and install dependencies.
+Clone repo and install dependencies. Install Docker.
 
 At the project root, create a `.env` file with relevant credentials.
 
@@ -39,14 +40,14 @@ docker start pgDocker
 
 ## Heroku
 
-For deployment to Heroku's [PostgreSQL free tier](https://elements.heroku.com/addons/heroku-postgresql), take into account the 10,000 total SQL rows limit (as of Oct. 2020). **Processing all items from CSV source files will exceed that limit!** Use the table below for reference and set the [source file](https://github.com/niiccolas/nevskii-db/blob/b17d3dac9f8e8c2cd05934516766a0428953b4b3/src/index.js#L44) and [range](https://github.com/niiccolas/nevskii-db/blob/b17d3dac9f8e8c2cd05934516766a0428953b4b3/src/index.js#L43) to limit row count accordingly.
+For deployment to Heroku's [PostgreSQL free tier](https://elements.heroku.com/addons/heroku-postgresql), take into account the 10,000 total SQL rows limit (as of Oct. 2020). **Processing all items from CSV source files will exceed that limit!** Use the table below for reference and set [source file](https://github.com/niiccolas/nevskii-db/blob/b17d3dac9f8e8c2cd05934516766a0428953b4b3/src/index.js#L44) and [items range](https://github.com/niiccolas/nevskii-db/blob/b17d3dac9f8e8c2cd05934516766a0428953b4b3/src/index.js#L43) to limit row count accordingly.
 
-| source file                                    | items | range            | total SQL rows |
-| ---------------------------------------------- | ----- | ---------------- | -------------- |
-| `dvd_8182.csv`                                 | 8182  | 0-8182           | 164477         |
-|                                                |       | **0-200**        | **5486 ✅**    |
-| `dvd_8182_mint.csv` (default, no missing data) | 4412  | 0-4412 (default) | 100785         |
-|                                                |       | **0-400**        | **8860 ✅**    |
+| source file                                    | items range (first-last)            | total SQL rows |
+| ---------------------------------------------- | ---------------- | -------------- |
+| `dvd_8182.csv`                                 | 0-8182           | 164477         |
+|                                                | **0-200**        | **5486 ✅**    |
+| `dvd_8182_mint.csv` (default, no missing data) | 0-4412 (default) | 100785         |
+|                                                | **0-400**        | **8860 ✅**    |
 
 ## Deployment
 
