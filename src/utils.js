@@ -60,7 +60,9 @@ const parseCSV = async (sourceFile) =>
   await csv({
     delimiter: ";",
     checkType: true,
-  }).fromFile(path.join("raw", sourceFile));
+  })
+    .fromFile(path.join("raw", sourceFile))
+    .on("done", () => spinnies.succeed("csv"));
 
 /**
  * CLI spinner
@@ -76,9 +78,13 @@ const spinner = () => {
     spinner: CINE_SNACKS,
   });
 
-  spinnies.add("drop", { text: "Dropping current DB" });
-  spinnies.add("csv", { text: "Parsing CSV source" });
-  spinnies.add("tables", { text: "Populating tables" });
+  // spinnies.add("drop", { text: "Drop DB" });
+  spinnies.add("csv", { text: "Parse CSV" });
+  spinnies.add("seed", { text: "Seed tables" });
+  spinnies.add("dump", { text: "Dump local DB" });
+  spinnies.add("upload", { text: "Upload dump to S3" });
+  spinnies.add("sign", { text: "Sign URL" });
+  spinnies.add("deploy", { text: "Deploy to Heroku" });
 
   return spinnies;
 };
@@ -94,11 +100,17 @@ const log = (error, EAN = "") => {
   process.exit(1);
 };
 
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max + 1 - min) + min);
+
+const spinnies = spinner();
+
 module.exports = {
   getIdIndex,
   parseMonthFR,
   generateIdName,
   parseCSV,
-  spinnies: spinner(),
+  spinnies,
   log,
+  randomInt,
 };

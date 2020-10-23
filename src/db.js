@@ -2,17 +2,40 @@ const format = require("pg-format");
 const pgtools = require("pgtools");
 const { Pool } = require("pg");
 const fs = require("fs");
+const { promisify } = require("util");
+const exec = promisify(require("child_process").exec);
+const perf = require("execution-time")();
+const chalk = require("chalk");
+const {
+  getIdIndex,
+  parseMonthFR,
+  generateIdName,
+  randomInt,
+  log,
+  spinnies,
+  parseCSV,
+} = require("./utils");
 
-const { getIdIndex, parseMonthFR, generateIdName, log } = require("./utils");
 require("dotenv").config();
+const {
+  PG_PASS,
+  PG_USER,
+  PG_HOST,
+  PG_PORT,
+  PG_DB_NAME,
+  DOCKER_CONTAINER,
+  DUMP_NAME,
+  S3_BUCKET,
+  HEROKU_APP_NAME,
+} = process.env;
 
-const { PG_PASS, PG_USER, PG_HOST, PG_PORT, PG_DB_NAME } = process.env;
 const DB_CONFIG = {
   password: PG_PASS,
   user: PG_USER,
   host: PG_HOST,
   port: PG_PORT,
 };
+
 const pool = new Pool({ database: PG_DB_NAME, ...DB_CONFIG });
 
 const [
@@ -348,33 +371,90 @@ const seedUsers = async (users) => {
   await pool.query(`INSERT INTO user_types ("description")
   VALUES ('admin'), ('user');`);
 
-  users.forEach(
-    async ({ type, name, email, gender, address, birthDate, countryId }) => {
+  for (const {
+    userType,
+    firstName,
+    lastName,
+    email,
+    gender,
+    address,
+    birthDate,
+    countryId,
+    city,
+    zipCode,
+  } of users) {
+    try {
       await pool.query(
         `INSERT INTO users (
         "id_user_type",
-        "full_name",
+        "first_name",
+        "last_name",
         "email",
         "gender",
         "address",
         "date_of_birth",
         "created_at",
-        "id_country")
+        "id_country",
+        "city",
+        "zip_code")
       VALUES
-      ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [
-          type || 2,
-          name || "John Doe",
-          email || "mail@mail.com",
-          gender || "F",
-          address || "1 avenue de Paris",
-          birthDate || "2006-01-01",
+          userType || 2,
+          firstName || "John",
+          lastName || "Doe",
+          email, // UNIQUE!
+          gender || "?",
+          address || `${randomInt(1, 50)} avenue de Paris`,
+          birthDate || `${randomInt(1960, 2000)}-${randomInt(01, 12)}-01`,
           "now()",
-          countryId || 0,
+          countryId || randomInt(0, 10),
+          city || "Paris",
+          zipCode || "75011",
         ]
       );
+    } catch (error) {
+      spinnies.stopAll("fail");
+      console.log(error);
+      await pool.end();
+      process.exit(1);
     }
-  );
+  }
+};
+
+/**
+ * Populate orders table with dummy orders
+ * @param {number} total - Total number of orders to generate
+ */
+const seedOrders = async (total) => {
+  const orders = new Array(total).fill(null).map((_, index) => ({
+    index: index + 1,
+    userId: randomInt(2, 3),
+    orderQuantity: randomInt(1, 7),
+    productId: randomInt(1, 199),
+  }));
+
+  for (const { index, userId, productId, orderQuantity } of orders) {
+    await pool.query(
+      `INSERT INTO orders (
+          "id_order",
+          "id_user",
+          "status",
+          "created_at")
+        VALUES
+        ($1, $2, $3, $4)`,
+      [index, userId, "Completed", "NOW()"]
+    );
+    await pool.query(
+      `INSERT INTO order_products (
+          "id_orp_order",
+          "id_orp_product",
+          "quantity")
+        VALUES
+        ($1, $2, $3)`,
+      [index, productId, orderQuantity]
+    );
+  }
 };
 
 /**
@@ -414,16 +494,67 @@ const rebootDB = async () => {
     await pgtools.createdb(DB_CONFIG, PG_DB_NAME);
     await pool.query(schema);
   } catch (error) {
-    // swallow non-existing db drop error, create db either way
+    // swallow non-existing DB drop error, create DB either way
     await pgtools.createdb(DB_CONFIG, PG_DB_NAME);
     await pool.query(schema);
   }
 };
 
+/**
+ * Deploys local DB to remote Heroku DB
+ */
+async function deployDB() {
+  try {
+    await exec(
+      `docker exec ${DOCKER_CONTAINER} pg_dump -Fc --no-acl --no-owner -h localhost -U postgres nevskii > ${DUMP_NAME}.dump`
+    );
+    spinnies.succeed("dump");
+    await exec(`aws s3 cp ${DUMP_NAME}.dump s3://${S3_BUCKET}`);
+    spinnies.succeed("upload");
+    const { stdout } = await exec(
+      `aws s3 presign s3://${S3_BUCKET}/${DUMP_NAME}.dump`
+    );
+    const signedURL = stdout.replace(/\n/g, "");
+    spinnies.succeed("sign");
+    await exec(
+      `heroku pg:backups:restore "${signedURL}" DATABASE_URL --confirm ${HEROKU_APP_NAME}`
+    );
+    spinnies.succeed("deploy");
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
+const seedTables = async ({ filepath, range = [0], users, orders }) => {
+  const csv = (await parseCSV(filepath)).slice(...range);
+  await seedForeignTables(csv);
+  await seedUsers(users);
+  await seedMainTables(csv);
+  await seedOrders(orders);
+  spinnies.succeed("seed");
+};
+
+/**
+ * Seed local nevskii database
+ * @param {Object} options - Seed options object
+ */
+const seedDB = async (options) => {
+  perf.start();
+  await rebootDB();
+  await seedTables(options);
+  await deployDB();
+  console.log(chalk.bold.green(`🍿 Job done! (${perf.stop().words})`));
+};
+
 module.exports = {
   pool,
+  seedTables,
   seedMainTables,
   seedForeignTables,
   seedUsers,
+  seedOrders,
   rebootDB,
+  deployDB,
+  seedDB,
 };

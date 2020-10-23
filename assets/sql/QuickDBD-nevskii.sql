@@ -266,15 +266,22 @@ CREATE TABLE "users" (
     "id_user" serial   NOT NULL,
     "id_user_type" int   NOT NULL,
     "id_country" int   NOT NULL,
-    "full_name" varchar(255)   NOT NULL,
-    "email" varchar(255)   NOT NULL,
-    "gender" char(2)   NULL,
-    "address" varchar(255)   NULL,
-    "date_of_birth" date   NOT NULL,
+    "first_name" varchar   NOT NULL,
+    "last_name" varchar   NOT NULL,
+    "email" varchar   NOT NULL,
+    "gender" char(1)   NULL,
+    "address" varchar   NULL,
+    "city" varchar   NOT NULL,
+    "zip_code" varchar   NOT NULL,
+    "state" varchar   NULL,
+    "date_of_birth" date   NULL,
     "created_at" timestamptz   NOT NULL,
     CONSTRAINT "pk_users" PRIMARY KEY (
         "id_user"
-     )
+     ),
+    CONSTRAINT "uc_users_email" UNIQUE (
+        "email"
+    )
 );
 
 CREATE TABLE "user_types" (
